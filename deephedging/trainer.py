@@ -443,43 +443,12 @@ def train(  gym,
 
 
 # === wrap_config 関連 ===
-class CdxConfigWrapper:
-    def __init__(self, config_dict):
-        self._config = config_dict
-
-    def __call__(self, key, default=None, *args):
-        value = self._config.get(key, default)
-        if args:
-            if isinstance(args[0], list) and value not in args[0]:
-                raise ValueError(f"Invalid value '{value}' for '{key}'. Expected one of {args[0]}.")
-        return value
-
-    def get(self, key, default=None, *args, **kwargs):
-        return self.__call__(key, default, *args)
-
-    def __getattr__(self, item):
-        value = self._config.get(item)
-        if isinstance(value, dict):
-            return CdxConfigWrapper(value)
-        return value
-
-    def __getitem__(self, item):
-        return self.__getattr__(item)
-
-    def to_dict(self):
-        return self._config
-
-    def copy(self):
-        # ✅ これを追加！
-        return CdxConfigWrapper(self._config.copy())
-
-
 def wrap_config(obj):
-    """Recursively wrap dictionaries or Config objects with CdxConfigWrapper."""
-    if isinstance(obj, CdxConfigWrapper):
+    """Recursively convert mappings to Config objects."""
+    if isinstance(obj, Config):
         return obj
-    if isinstance(obj, Mapping) or isinstance(obj, Config):
-        return CdxConfigWrapper({k: wrap_config(v) for k, v in obj.items()})
+    if isinstance(obj, Mapping):
+        return Config({k: wrap_config(v) for k, v in obj.items()})
     return obj
 
 
