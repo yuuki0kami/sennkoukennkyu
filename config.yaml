@@ -1,0 +1,49 @@
+world:
+  samples: 10000
+  steps: 30
+  seed: 123456
+  dt: 0.05
+
+  strike: 1.0
+  payoff: "atmcall"
+
+  rvol: 0.2
+  ivol: 0.2
+  meanrev_rvol: 2.0
+  meanrev_ivol: 0.1
+  volvol_rvol: 0.3
+  volvol_ivol: 0.3
+  corr_vs: -0.7
+  corr_vi: 0.5
+  rcorr_vs: -0.5
+
+gym:
+  agent:
+    agent_type: feed_forward
+    layers: [64, 64]
+    activation: relu
+  objective:
+    utility:
+      type: exponential
+      eta: 1.0
+
+trainer:
+  batch_size: 128
+  epochs: 10000
+  learning_rate: 0.0005
+  loss: cvar
+  alpha: 0.5
+
+train:
+  batch_size: 128
+  epochs: 10000
+  learning_rate: 0.0005
+
+tensorflow:
+  seed: 123456
+
+
+
+
+
+
