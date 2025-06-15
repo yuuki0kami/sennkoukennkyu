@@ -102,6 +102,15 @@ class SimpleWorld_Spot_ATM(object):
         self.tf_dtype  = dtype
         self.np_dtype  = dtype.as_numpy_dtype()
         self.unique_id = None               # for serialization; see below
+
+        # Allow passing dictionaries directly. This mirrors the behaviour of
+        # wrap_config used elsewhere and prevents confusing TypeErrors when
+        # config is accidentally not a ``Config`` instance.
+        if config is None:
+            config = Config()
+        elif isinstance(config, Mapping) and not isinstance(config, Config):
+            config = Config(config)
+
         self.config    = config.copy()      # for cloning
 
         # simulator
