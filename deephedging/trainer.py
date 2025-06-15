@@ -17,6 +17,7 @@ from cdxbasics.prettydict import PrettyDict as pdct
 from cdxbasics.util import uniqueHash
 from cdxbasics.config import Config
 from cdxbasics.subdir import SubDir, uniqueFileName48, CacheMode
+from collections.abc import Mapping
 import time as time
 import numpy as np # NOQA
 import psutil as psutil
@@ -471,6 +472,15 @@ class CdxConfigWrapper:
     def copy(self):
         # ✅ これを追加！
         return CdxConfigWrapper(self._config.copy())
+
+
+def wrap_config(obj):
+    """Recursively wrap dictionaries or Config objects with CdxConfigWrapper."""
+    if isinstance(obj, CdxConfigWrapper):
+        return obj
+    if isinstance(obj, Mapping) or isinstance(obj, Config):
+        return CdxConfigWrapper({k: wrap_config(v) for k, v in obj.items()})
+    return obj
 
 
 
